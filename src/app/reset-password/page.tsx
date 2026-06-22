@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import api from "@/lib/axios";
 
-export default function ResetPasswordPage() {
+// 1. Move all the actual page logic into this component
+function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
@@ -154,5 +155,20 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+// 2. Wrap it in Suspense for the default export
+export default function ResetPasswordPage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="min-h-screen bg-[#FEF9F5] flex items-center justify-center">
+          <p className="text-gray-500 text-sm">Loading...</p>
+        </div>
+      }
+    >
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
